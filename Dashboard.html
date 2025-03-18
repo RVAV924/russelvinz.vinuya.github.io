@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartLog - Dashboard</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    /* Base reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    /* HEADER */
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background-color: #fff;
+      border-bottom: 1px solid #ccc;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+    .hamburger {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #333;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .brand .title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      width: 40px;
+      height: auto;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: "Rockwell Condensed", sans-serif;
+    }
+    h3 {
+      font-size: 0.5rem;
+      font-family: "Roboto", sans-serif;
+      letter-spacing: 2px;
+      font-weight: normal;
+    }
+    /* Header Right: bell and logout adjacent */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .bell-icon {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #6c757d;
+      cursor: pointer;
+      position: relative;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    .bell-icon:hover {
+      background-color: #f8f9fa;
+      color: #28a745;
+    }
+    #logoutBtn {
+      font-size: 1rem;
+      background-color: #FF6961;
+      border-radius: 10px;
+      width: 7rem;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      color: #333;
+      transition: all 0.3s ease;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #logoutBtn:hover {
+      font-weight: bold;
+      transform: translateY(-2px);
+      background-color: crimson; 
+      color: #fff !important;
+    }
+    
+    /* Off-canvas NAVBAR */
+    .header-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      background: rgba(85, 107, 47, 1);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+    }
+    .header-nav.active {
+      transform: translateX(0);
+    }
+    /* Navbar Link Styling */
+    .header-nav a {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      padding: 15px 20px;
+      color: #fff;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .header-nav a:hover {
+      background-color: #28a745;
+    }
+    /* Ensure conventional alignment by giving icons a fixed width */
+    .header-nav a i {
+      min-width: 24px;
+      text-align: center;
+    }
+    /* Nav label styling */
+    .header-nav a .nav-label {
+      margin-left: 10px;
+      font-weight: normal;
+      text-decoration: none;
+    }
+    .header-nav a:hover .nav-label {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    
+    /* Profile Section in Navbar */
+    .profile-picture {
+      width: 100%;
+      padding: 10px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .profile-pic-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border: 3px solid #f5f5f5;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .profile-pic-container i {
+      font-size: 3rem;
+      color: #f5f5f5;
+    }
+    .profile-pic-container img.profile-pic {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .user-name {
+      color: #f5f5f5;
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    .edit-profile {
+      background: rgba(255, 255, 255, 0.7);
+      color: darkolivegreen;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .edit-profile:hover {
+      color: #fff;
+      font-weight: bold;
+      background-color: #28a745;
+    }
+    
+    /* Dashboard Components */
+    .main-content {
+      padding: 24px;
+      background-color: #f8f9fa;
+      margin: 20px;
+      border-radius: 8px;
+    }
+    .dashboard-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding: 16px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .dashboard-header h1 {
+      font-size: 24px;
+      color: #2c3e50;
+      margin: 0;
+    }
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .profile-card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      text-align: center;
+      transition: transform 0.3s ease;
+      border: 1px solid #e9ecef;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .profile-card:hover {
+      cursor: pointer;
+      transform: translateY(-5px);
+    }
+    .profile-card:nth-child(1) { border-top: 4px solid #27a444; }
+    .profile-card:nth-child(2) { border-top: 4px solid #2196f3; }
+    .profile-card:nth-child(3) { border-top: 4px solid #ff9800; }
+    .profile-card i {
+      font-size: 1.2rem;
+      color: #27a444;
+      margin-bottom: 16px;
+      background: #f8f9fa;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .profile-card h3 {
+      color: #6c757d;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .profile-card .count {
+      color: #2c3e50;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    /* Announcements Section Styling */
+    .announcements {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .announcements-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e9ecef;
+    }
+    .announcements-header h2 {
+      font-size: 20px;
+      color: #2c3e50;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    .announcements-content {
+      min-height: 200px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+    .announcement-item {
+      padding: 15px;
+      margin-bottom: 15px;
+      background: white;
+      border-left: 4px solid #27a444;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .announcement-item:last-child {
+      margin-bottom: 0;
+    }
+    .announcement-date {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 5px;
+    }
+    .announcement-text {
+      color: #2c3e50;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .no-announcements {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: #6c757d;
+      font-size: 1.1rem;
+      font-style: italic;
+      text-align: center;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-header,
+      .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .main-content {
+        margin: 10px;
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="header-container">
+    <div class="header-left">
+      <!-- Hamburger Icon -->
+      <button class="hamburger" id="hamburgerBtn">☰</button>
+<nav>
+        <button onclick="showContent('home')">Home</button>
+        <button onclick="showContent('about')">About</button>
+        <button onclick="showContent('contact')">Contact</button>
+    </nav>
+      <!-- Brand -->
+      <div class="brand">
+        <div class="title-wrapper">
+          <img src="Logo.png" alt="SmartLog Logo" class="logo" />
+          <h2>SmartLog</h2>
+        </div>
+        <h3>~ Your trusted DTR Companion ~</h3>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="bell-icon" id="bellBtn">🔔</button>
+<div id="notificationPanel" class="hidden">
+    <p>No new notifications</p>
+</div>
+      </button>
+      <button id="logoutBtn">
+        <i class="fa-solid fa-sign-out"></i>
+        <span class="logout-label">&nbsp;LOGOUT</span>
+      </button>
+    </div>
+  </header>
+  
+  <!-- OFF-CANVAS NAVBAR -->
+  <nav class="header-nav" id="navMenu">
+    <div class="profile-picture">
+      <div class="profile-pic-container">
+        <div class="profile-pic-content" id="defaultIconNav">
+          <i class="fa-solid fa-user"></i>
+          <!-- Profile picture preview (hidden by default) -->
+          <img id="profilePicPreviewNav" class="profile-pic" src="" style="display: none;" alt="Profile Picture" />
+        </div>
+      </div>
+      <span class="user-name">Roman Reigns</span>
+      <button class="edit-profile">
+        <i class="fas fa-pen"></i>
+        <span> Edit Profile</span>
+      </button>
+    </div>
+    <a href="Dashboard.html">
+      <i class="fa-solid fa-tachometer-alt"></i>
+      <span class="nav-label">DASHBOARD</span>
+    </a>
+    <a href="Scholars.html">
+      <i class="fas fa-user-graduate"></i>
+      <span class="nav-label">SCHOLARS</span>
+    </a>
+    <a href="Faculty.html">
+      <i class="fa-solid fa-chalkboard-teacher"></i>
+      <span class="nav-label">FACULTY</span>
+    </a>
+    <a href="Record.html">
+      <i class="fa-solid fa-file-alt"></i>
+      <span class="nav-label">RECORD</span>
+    </a>
+    <a href="User Accounts.html">
+      <i class="fas fa-user-cog"></i>
+      <span class="nav-label">USER ACCOUNTS</span>
+    </a>
+  </nav>
+  
+  <!-- MAIN CONTENT -->
+  <div id="content">
+        <h2>Welcome to Smartlog</h2>
+    </div>
+    </section>
+    
+    <section class="announcements">
+      <div class="announcements-header">
+        <h2>Announcements</h2>
+      </div>
+      <div class="announcements-content" id="announcementsContainer">
+        <!-- Announcements will be dynamically inserted here -->
+      </div>
+    </section>
+  </main>
+  
+  <script>
+        function showContent(page) {
+            let contentDiv = document.getElementById("content");
+
+            if (page === "home") {
+                contentDiv.innerHTML = "<h2>Welcome to Home Page!</h2>";
+            } else if (page === "about") {
+                contentDiv.innerHTML = "<h2>About this site...</h2><p>Smartlog is a paper-based attendance and time-tracking process for HK Scholars of PHINMA-UPANG.</p>";
+            } else if (page === "contact") {
+                contentDiv.innerHTML = "<h2>Contact</h2><p>Phone Number: 09616070807</p>";
+            }
+        }
+    </script>
+</body>
+</html>
